@@ -1,26 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { ThemeProvider } from "styled-components";
+import styled from "styled-components";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { RootState } from "./app/store";
+import { darkTheme, lightTheme, ThemeType } from "./helper/theme/theme";
+import Header from "./modules/header/header";
+import { useEffect } from "react";
+import i18n from "./helper/i18next/i18n";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const Container = styled.div`
+ background-color: ${({ theme }) => theme.background};
+ color: ${({ theme }) => theme.text};
+ height: 100vh;
+ transition: all 0.3s linear;
+`;
+
+const App: React.FC = () => {
+ const { t } = useTranslation();
+
+ const themeMode = useSelector((state: RootState) => state.theme.value);
+ const language = useSelector((state: RootState) => state.language.value);
+ const theme: ThemeType = themeMode === "lightTheme" ? lightTheme : darkTheme;
+
+ 
+ useEffect(() => {
+  if (language) {
+    i18n.changeLanguage(language);
+  }
+ }, [language]);
+
+ return (
+  <ThemeProvider theme={theme}>
+   <Container>
+    <Header />
+    <div className="App">{t("welcome")} world</div>
+   </Container>
+  </ThemeProvider>
+ );
+};
 
 export default App;
