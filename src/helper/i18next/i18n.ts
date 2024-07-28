@@ -8,6 +8,7 @@ i18n.use(initReactI18next).init({
     welcome: "Welcome",
     theme: "theme",
     lang: "language",
+    currentWeek: "current week",
    },
   },
   ru: {
@@ -15,6 +16,7 @@ i18n.use(initReactI18next).init({
     welcome: "Добро пожаловать",
     theme: "тема",
     lang: "язык",
+    currentWeek: "текущая неделя",
    },
   },
  },

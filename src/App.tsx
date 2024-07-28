@@ -7,6 +7,7 @@ import { darkTheme, lightTheme, ThemeType } from "./helper/theme/theme";
 import Header from "./modules/header/header";
 import { useEffect } from "react";
 import i18n from "./helper/i18next/i18n";
+import Main from "./pages/main";
 
 const Container = styled.div`
  background-color: ${({ theme }) => theme.background};
@@ -33,7 +34,7 @@ const App: React.FC = () => {
   <ThemeProvider theme={theme}>
    <Container>
     <Header />
-    <div className="App">{t("welcome")} world</div>
+    <Main/>
    </Container>
   </ThemeProvider>
  );

@@ -1,23 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import i18n from "../../helper/i18next/i18n";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { setLanguage } from "../../features/language/languageSlice";
-import { IoMdArrowDropdownCircle } from "react-icons/io";
-import { IoMdArrowDropupCircle } from "react-icons/io";
+import { IoMdArrowDropdownCircle, IoMdArrowDropupCircle } from "react-icons/io";
 import { CSSTransition } from "react-transition-group";
 
 const Container = styled.div`
  height: 40px;
 `;
 
-interface ThemeContainer {
- istheme: string;
+interface ThemeProps {
+ $istheme: string;
 }
 
-const SelectContainer = styled.div<ThemeContainer>`
+const SelectContainer = styled.div<ThemeProps>`
  padding: 5px;
  border-radius: 5px;
  border: 1px solid black;
@@ -29,8 +28,8 @@ const SelectContainer = styled.div<ThemeContainer>`
 `;
 
 interface SelectProps {
- isopen: boolean;
- istheme: string;
+ $isopen: boolean;
+ $istheme: string;
 }
 
 const Select = styled.div<SelectProps>`
@@ -39,8 +38,8 @@ const Select = styled.div<SelectProps>`
  left: 0;
  border: 1px solid black;
  width: 100%;
- opacity: ${(props) => (props.isopen ? 1 : 0)};
- max-height: ${(props) => (props.isopen ? "200px" : "0")};
+ opacity: ${(props) => (props.$isopen ? 1 : 0)};
+ max-height: ${(props) => (props.$isopen ? "200px" : "0")};
  overflow: hidden;
  transition: opacity 1.3s ease, max-height 1.3s ease;
  z-index: 1;
@@ -53,7 +52,7 @@ const Arrow = styled.div`
  align-items: center;
 `;
 
-const Option = styled.div<ThemeContainer>`
+const Option = styled.div<ThemeProps>`
  padding: 5px;
  cursor: pointer;
 
@@ -64,6 +63,7 @@ const Option = styled.div<ThemeContainer>`
 
 function ChooseLang() {
  const [isMenu, setIsMenu] = useState(false);
+ const menuRef = useRef(null);
  const dispatch = useDispatch();
  const language = useSelector((state: RootState) => state.language.value);
  const theme = useSelector((state: RootState) => state.theme.value);
@@ -94,29 +94,23 @@ function ChooseLang() {
 
  return (
   <Container>
-   <SelectContainer onClick={handleShowMenu} istheme={theme}>
+   <SelectContainer onClick={handleShowMenu} $istheme={theme}>
     {t("lang")}: {language.toUpperCase()}
-    {isMenu ? (
-     <Arrow>
-      <IoMdArrowDropupCircle />
-     </Arrow>
-    ) : (
-     <Arrow>
-      <IoMdArrowDropdownCircle />
-     </Arrow>
-    )}
-    <CSSTransition in={isMenu} timeout={400} mountOnEnter>
-     <Select isopen={isMenu} istheme={theme}>
-      <Option
-       onClick={() => changeLang((i18n.language = "ru"))}
-       istheme={theme}
-      >
+    <Arrow>
+     {isMenu ? <IoMdArrowDropupCircle /> : <IoMdArrowDropdownCircle />}
+    </Arrow>
+    <CSSTransition
+     in={isMenu}
+     timeout={400}
+     classNames="menu"
+     unmountOnExit
+     nodeRef={menuRef}
+    >
+     <Select ref={menuRef} $isopen={isMenu} $istheme={theme}>
+      <Option onClick={() => changeLang("ru")} $istheme={theme}>
        RU
       </Option>
-      <Option
-       onClick={() => changeLang((i18n.language = "en"))}
-       istheme={theme}
-      >
+      <Option onClick={() => changeLang("en")} $istheme={theme}>
        EN
       </Option>
      </Select>
